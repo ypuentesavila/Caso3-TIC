@@ -1,5 +1,3 @@
-// Módulo 3 - punto 1: Thread consumidor/productor
-// Enruta eventos al servidor de consolidación correspondiente
 public class Clasificador extends Thread {
     private int id;
     private Buzon buzonClasificacion;
@@ -19,26 +17,30 @@ public class Clasificador extends Thread {
     public void run() {
         try {
             while (true) {
-                // espera pasiva hasta recibir evento
                 Evento e = buzonClasificacion.retirar();
 
-                // detecta evento de fin
                 if (e.esFin()) {
                     System.out.println("[CLASIFICADOR-" + id + "] Recibió FIN");
-                    // decrementar es synchronized
+
+                    // El ultimo clasificador en terminar manda FIN a cada servidor
                     boolean esUltimo = contador.decrementar();
                     if (esUltimo) {
-                        // El último envía fin a todos los servidores
+                        System.out.println("[CLASIFICADOR-" + id + "] Es el último → enviando FIN a " 
+                                           + buzonesConsolidacion.length + " servidores");
                         for (Buzon b : buzonesConsolidacion) {
-                            b.depositar(new Evento());
+                            b.depositar(Evento.crearFin());
                         }
-                        System.out.println("[CLASIFICADOR-" + id + "] Último → envió FINes a servidores");
                     }
-                    break;
+                    break; // termina sin procesar nada más
                 }
 
-                // Enrutar al servidor según tipo de evento
-                int indexServidor = e.getTipo() - 1;
+                // valida que el índice del servidor sea valid
+                int indexServidor = e.getTipo() - 1; // getTipo() entre 1 y ns
+                if (indexServidor < 0 || indexServidor >= buzonesConsolidacion.length) {
+                    System.out.println("[CLASIFICADOR-" + id + "] Índice inválido para: " + e);
+                    continue;
+                }
+
                 buzonesConsolidacion[indexServidor].depositar(e);
                 System.out.println("[CLASIFICADOR-" + id + "] → Servidor " + e.getTipo() + ": " + e);
             }

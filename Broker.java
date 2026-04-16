@@ -1,5 +1,3 @@
-// Módulo 3 - punto 1: Thread consumidor/productor intermedio
-// Consume del buzón de entrada, produce en alertas o clasificación
 public class Broker extends Thread {
     private int totalEventos;
     private Buzon buzonEntrada;
@@ -18,22 +16,21 @@ public class Broker extends Thread {
     public void run() {
         try {
             for (int i = 0; i < totalEventos; i++) {
-                // retirar usa espera pasiva (wait)
                 Evento e = buzonEntrada.retirar();
 
-                // Simula detección de anomalías
                 int random = (int)(Math.random() * 201); // 0 a 200
                 if (random % 8 == 0) {
                     buzonAlertas.depositar(e);
-                    System.out.println("[BROKER] ALERTA → " + e);
+                    System.out.println("[BROKER] Anómalo → alertas: " + e);
                 } else {
                     buzonClasificacion.depositar(e);
-                    System.out.println("[BROKER] Normal → " + e);
+                    System.out.println("[BROKER] Normal → clasificación: " + e);
                 }
             }
-            // evento de fin para el administrador
-            buzonAlertas.depositar(new Evento());
-            System.out.println("[BROKER] Envió FIN al administrador. Terminó");
+
+            buzonAlertas.depositar(Evento.crearFin());
+            System.out.println("[BROKER] Todos los eventos procesados. FIN enviado al administrador");
+
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }

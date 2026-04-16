@@ -7,19 +7,23 @@ public class Main {
 
         Configuracion config = new Configuracion(args[0]);
 
-        // Total de eventos: suma de base*1 + base*2 + ... + base*ni
         int totalEventos = config.base * config.ni * (config.ni + 1) / 2;
+        System.out.println("=== Sistema IoT ===");
+        System.out.println("Sensores: " + config.ni + " | Base: " + config.base);
+        System.out.println("Clasificadores: " + config.nc + " | Servidores: " + config.ns);
         System.out.println("Total eventos esperados: " + totalEventos);
+        System.out.println("==================");
 
-        Buzon buzonEntrada       = new Buzon(-1);          // ilimitado
-        Buzon buzonAlertas       = new Buzon(-1);          // ilimitado
-        Buzon buzonClasificacion = new Buzon(config.tam1); // limitado
+        Buzon buzonEntrada       = new Buzon(-1);
+        Buzon buzonAlertas       = new Buzon(-1);
+        Buzon buzonClasificacion = new Buzon(config.tam1);
         Buzon[] buzonesConsolidacion = new Buzon[config.ns];
         for (int i = 0; i < config.ns; i++) {
-            buzonesConsolidacion[i] = new Buzon(config.tam2); // limitado
+            buzonesConsolidacion[i] = new Buzon(config.tam2);
         }
 
         ContadorClasificadores contador = new ContadorClasificadores(config.nc);
+
         Servidor[] servidores = new Servidor[config.ns];
         for (int i = 0; i < config.ns; i++) {
             servidores[i] = new Servidor(i + 1, buzonesConsolidacion[i]);
@@ -45,21 +49,21 @@ public class Main {
             sensores[i].start();
         }
 
-        // join() espera a que todos los hilos terminen
+        // espera que terminen  todos los hilos
         for (Sensor s : sensores) s.join();
         broker.join();
         admin.join();
         for (Clasificador c : clasificadores) c.join();
         for (Servidor s : servidores) s.join();
 
-        // todos los buzones deben quedar vacíos
-        System.out.println("\n✓ Sistema terminado correctamente");
-        System.out.println("Buzón entrada:       " + buzonEntrada.size()       + " eventos");
-        System.out.println("Buzón alertas:       " + buzonAlertas.size()       + " eventos");
-        System.out.println("Buzón clasificación: " + buzonClasificacion.size() + " eventos");
+        // todos los buzones deben quedar en 0
+        System.out.println("\n=== Verificación Final ===");
+        System.out.println("Buzón entrada:       " + buzonEntrada.size());
+        System.out.println("Buzón alertas:       " + buzonAlertas.size());
+        System.out.println("Buzón clasificación: " + buzonClasificacion.size());
         for (int i = 0; i < config.ns; i++) {
-            System.out.println("Buzón consolidación " + (i + 1) + ": "
-                               + buzonesConsolidacion[i].size() + " eventos");
+            System.out.println("Buzón consolidación " + (i+1) + ": " + buzonesConsolidacion[i].size());
         }
+        System.out.println("✓ Sistema terminado correctamente");
     }
 }

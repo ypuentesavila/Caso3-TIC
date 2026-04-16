@@ -1,5 +1,3 @@
-// Módulo 3 - punto 1: Thread consumidor/productor intermedio
-// Filtra alertas y controla terminación de clasificadores
 public class Administrador extends Thread {
     private int nc;
     private Buzon buzonAlertas;
@@ -15,26 +13,23 @@ public class Administrador extends Thread {
     public void run() {
         try {
             while (true) {
-                //spera pasiva hasta recibir evento
                 Evento e = buzonAlertas.retirar();
 
-                // detecta evento de fin
                 if (e.esFin()) {
-                    // enviar nc eventos de fin a clasificadores
+                    System.out.println("[ADMIN] Recibió FIN del broker. Enviando " + nc + " FINes a clasificadores");
                     for (int i = 0; i < nc; i++) {
-                        buzonClasificacion.depositar(new Evento());
+                        buzonClasificacion.depositar(Evento.crearFin());
                     }
-                    System.out.println("[ADMIN] Envió " + nc + " FINes a clasificadores. Terminó");
+                    System.out.println("[ADMIN] Terminó");
                     break;
                 }
 
-                // Simular inspección profunda
                 int random = (int)(Math.random() * 21); 
                 if (random % 4 == 0) {
                     buzonClasificacion.depositar(e);
-                    System.out.println("[ADMIN] Evento inofensivo → clasificación: " + e);
+                    System.out.println("[ADMIN] Inofensivo → clasificación: " + e);
                 } else {
-                    System.out.println("[ADMIN] Evento malicioso descartado: " + e);
+                    System.out.println("[ADMIN] Malicioso descartado: " + e);
                 }
             }
         } catch (InterruptedException ex) {

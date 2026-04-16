@@ -1,23 +1,33 @@
-// representa un evento del sistema IoT
 public class Evento {
     private String id;
     private int tipo;
     private boolean esFin;
 
     public Evento(String id, int tipo) {
+        if (tipo < 1) throw new IllegalArgumentException("Tipo inválido: " + tipo);
         this.id = id;
         this.tipo = tipo;
         this.esFin = false;
     }
 
-    public Evento() {
+    public static Evento crearFin() {
+        Evento fin = new Evento();
+        return fin;
+    }
+
+    private Evento() {
         this.esFin = true;
         this.id = "FIN";
-        this.tipo = -1;
+        this.tipo = -1; 
     }
 
     public String getId() { return id; }
-    public int getTipo() { return tipo; }
+
+    public int getTipo() {
+        if (esFin) throw new IllegalStateException("Evento FIN no tiene tipo");
+        return tipo;
+    }
+
     public boolean esFin() { return esFin; }
 
     @Override
