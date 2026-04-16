@@ -1,10 +1,9 @@
-Caso 3 – Sistema IoT Concurrente
-
+Caso 3 - Sistema IoT Concurrente
 Descripción
 Este programa simula un sistema IoT donde varios sensores generan eventos que pasan por diferentes etapas hasta ser procesados por servidores.
-El flujo es:
+Flujo del sistema:
 Sensores → Broker → Administrador → Clasificadores → Servidores
-Cada componente es un hilo y se comunican usando buzones compartidos.
+Cada componente se implementa como un hilo y se comunican usando buzones compartidos.
 Concurrencia
 Se usaron:
 Threads para cada componente
