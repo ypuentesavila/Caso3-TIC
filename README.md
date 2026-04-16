@@ -1,18 +1,10 @@
-# Caso 3 - Sistema IoT Concurrente
+# Caso 3
 
 ## Descripción
 Este programa simula un sistema IoT donde varios sensores generan eventos que pasan por diferentes etapas hasta ser procesados por servidores. El flujo del sistema es el siguiente:
 
 **Sensores → Broker → Administrador → Clasificadores → Servidores**
-
 Cada componente se implementa como un hilo independiente y la comunicación se realiza mediante buzones compartidos.
-
-## Concurrencia
-La gestión de hilos y sincronización se basa en los siguientes principios:
-* **Threads:** Implementación de hilos para cada componente.
-* **Sincronización:** Uso de `synchronized` para proteger los buzones compartidos.
-* **Coordinación:** Uso de `wait()` y `notifyAll()` para coordinar productores y consumidores.
-* **Terminación:** Manejo de cierre del sistema mediante eventos de tipo `FIN`.
 
 ## Configuración del archivo config.txt
 El archivo de configuración debe contener una sola línea con 6 valores enteros:
