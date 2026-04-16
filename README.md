@@ -18,8 +18,6 @@ El archivo de configuración debe contener una sola línea con 6 valores enteros
 * **tam2**: Capacidad de los buzones de los Clasificadores.
 
 ## Compilación y Ejecución
-Para poner en marcha el sistema, ejecute la siguiente secuencia de comandos en la terminal:
-
 ```bash
 # 1. Compilar el proyecto
 javac *.java
